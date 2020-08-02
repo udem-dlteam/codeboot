@@ -57,6 +57,15 @@ var bignum_radix_log2 = 14; // must be between 5 and 14 (could be as low as 1 if
 var bignum_radix = 1 << bignum_radix_log2;
 var bignum_radix_div2 = 1 << (bignum_radix_log2-1);
 
+// Modulo optimized for power of 2.
+function modulo2(x, y) {
+  if (x < 0) {
+    return y - (Math.abs(x) & (y - 1));
+  } else {
+    return x & (y - 1);
+  }
+}
+
 function bignum_from_js(n)
 {
     // Constructs a normalized bignum from a plain JavaScript integer.
@@ -393,7 +402,103 @@ function bignum_nonneg_quorem(bignum_a, bignum_b)
 
     if (len_b > 1)
     {
-        throw "we don't yet support multi-digit divisors";
+        if (bignum_eq(bignum_a, bignum_b)) {
+          return { quo: bignum_from_js(1), rem: bignum_from_js(0) }
+        } else if (bignum_lt(bignum_a, bignum_b)) {
+          return { quo: bignum_from_js(0), rem: bignum_a }
+        } else {
+
+          var result = new Array((len_a - len_b) + 2).fill(0);
+
+          // [a, b, c] -> a + b*(1<<14) + c*(1<<28)
+
+          // STEP 1: normalize bignum_a and bignum_b
+          var shift = 0;
+          var n = bignum_b[len_b - 1] * 2;
+          while (n < bignum_radix) {
+            shift = shift + 1;
+            n = n << 1;
+          }
+
+          // XXX: not sure if shift is valid.
+          var nx = bignum_shift(bignum_a, shift);
+          var ny = bignum_shift(bignum_b, shift);
+
+          i = len_a;
+          while (!(i < len_b)) {
+            // STEP 2: calculate next digit in quotient
+            var msd_of_ny = ny[len_b - 1];
+            var next_msd_of_ny = ny[len_b - 2];
+            var msd_of_nx = nx[i];
+            var next_msd_of_nx = nx[i - 1];
+            var next_next_msd_of_nx = nx[i - 2];
+
+            var next_digit = function (q, u) {
+              if (u < bignum_radix) {
+                var temp1 = q * next_msd_of_ny;
+                var temp2 = temp1 >> bignum_radix_log2;
+                if (u < temp2
+                    || (temp2 == u
+                        && next_next_msd_of_nx < (temp1 & (bignum_radix_div2 - 1)))) {
+                  return next_digit(q - 1, u + msd_of_ny);
+                }
+              }
+              return q;
+            };
+
+            var q = null;
+            if (msd_of_nx == msd_of_ny) {
+              q = next_digit(
+                bignum_radix - 1, // or 1
+                msd_of_ny + next_msd_of_nx);
+            } else {
+              var temp = (msd_of_nx * bignum_radix) + next_msd_of_nx;
+              q = next_digit(
+                Math.trunc(temp / msd_of_ny),
+                temp % msd_of_ny
+              );
+            }
+
+            // STEP 3: multiply and substract
+            var j = 0; // no sign in pos 0, maybe bug...
+            var k = i - len_b;
+            var b = 0;
+
+            var w = null;
+            while(j < len_b) {
+              w = (nx[k] + b) - ny[j] * q;
+              nx[k] = modulo2(w, bignum_radix);
+              j += 1;
+              k += 1;
+              b = Math.trunc((w - (bignum_radix - 1)) / bignum_radix);
+            }
+
+            w = nx[k] + b;
+            nx[k] = modulo2(w, bignum_radix);
+            if (w < 0) {
+              result[i - len_b] = q - 1;
+              var j1 = 0;
+              var k1 = i - len_b;
+              var c1 = 0;
+              while (j1 < len_b) {
+                var w1 = nx[k1] + ny[j1] + c1;
+                nx[k1] = modulo2(w1, bignum_radix);
+                j1 += 1;
+                k1 += 1;
+                c1 = Math.trunc(w1 / bignum_radix);
+              }
+
+              nx[k1] = modulo2(nx[k1] + c1, bignum_radix);
+            } else {
+              result[i - len_b] = q;
+            }
+            i = i - 1;
+          }
+
+
+          nx = bignum_shift(nx, -shift);
+          return { quo: result, rem: nx };
+        }
     }
     else
     {
