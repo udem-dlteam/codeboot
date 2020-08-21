@@ -188,6 +188,19 @@ function float_nan() {
 }
 
 function float_to_string(float_a) {
+
+    if (float_is_nan(float_a))
+        return "nan";
+
+    if (float_is_infinite(float_a)) {
+        if (float_is_neg(float_a))
+            return "-inf";
+        return "inf";
+    }
+
+    if ((float_is_zero(float_a)) && (float_is_neg(1.0/float_a)))
+        return "-0.0"
+
     var str_a = float_a + "";
     if (str_a.includes('.') || str_a.includes('e'))
         return str_a;
