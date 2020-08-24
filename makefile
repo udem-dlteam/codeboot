@@ -35,11 +35,11 @@ include/lang/py/pyinterp.js: zipi-pull
 	@echo "***   Running make on the parser"
 	cd ./$(ZIPI_FOR_CODEBOOT)/parser && $(MAKE)
 	@echo "***   Running make on pyinterp"
-	cd ./$(ZIPI_FOR_CODEBOOT)/etc/bootstrap && $(MAKE) pyinterp
+	cd ./$(ZIPI_FOR_CODEBOOT)/etc/zp && $(MAKE) pyinterp
 	@echo "***   Backing up old include/lang/py/pyinterp.js"
 	cp ./include/lang/py/pyinterp.js ./include/lang/py/pyinterp.js.bk
 	@echo "***   Creating include/lang/py/pyinterp.js"
-	cp ./$(ZIPI_FOR_CODEBOOT)/etc/bootstrap/_tmpdir/pyinterp.js ./include/lang/py/pyinterp.js
+	cp ./$(ZIPI_FOR_CODEBOOT)/etc/zp/_tmpdir/pyinterp.js ./include/lang/py/pyinterp.js
 
 .PHONY: serve
 serve: bundle
