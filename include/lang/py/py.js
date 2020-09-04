@@ -389,4 +389,12 @@ function runtime_prompt(msg) {
   return runtime_input(msg);
 }
 
+function list_new(size, default_){
+    return Array.from({length: size}, function() {return default_;});
+}
+
+function list_concat(lst1, lst2){
+    return lst1.concat(lst2);
+}
+
 // runtime_random is define in pyinterp runtime.
