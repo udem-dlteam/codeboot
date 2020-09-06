@@ -381,10 +381,14 @@ DrawingWindow.prototype.setShow = function (show) {
     if (show) {
         // Use relative selectors
         //$('.cb-pixels-window').css('display', 'none');
-        vm.root.querySelector('.cb-pixels-window').style.display = 'none';
         //$('.cb-drawing-window').css('display', 'inline');
+        // Use attribute to affect display instead of changing style directly
+        // will be usefull for CodeBoot in presentation
+        //vm.root.querySelector('.cb-pixels-window').style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-pixels-window");
+        vm.root.setAttribute("data-cb-show-drawing-window", true);
         var parent = vm.root.querySelector('.cb-drawing-window');
-        parent.style.display = 'inline';
+        //parent.style.display = 'inline';
         // End
         dom_remove_children(parent);
         parent.appendChild(drawing_window.drawing_canvas);
@@ -396,7 +400,8 @@ DrawingWindow.prototype.setShow = function (show) {
         dom_remove_children(parent);
         // Use relative selectors
         //$('.cb-drawing-window').css('display', 'none');
-        parent.style.display = 'none';
+        //parent.style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-drawing-window");
         // End
         update_playground_visibility(vm);
     }
@@ -705,10 +710,14 @@ PixelsWindow.prototype.setShow = function (show) {
     if (show) {
         // Use relative selectors
         //$('.cb-drawing-window').css('display', 'none');
-        vm.root.querySelector('.cb-drawing-window').style.display = 'none';
         //$('.cb-pixels-window').css('display', 'inline');
+        // Use attribute to affect display instead of changing style directly
+        // will be usefull for CodeBoot in presentation
+        //vm.root.querySelector('.cb-drawing-window').style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-drawing-window");
+        vm.root.setAttribute("data-cb-show-pixels-window", true);
         var parent = vm.root.querySelector('.cb-pixels-window');
-        parent.style.display = 'inline';
+        //parent.style.display = 'inline';
         //var parent = document.querySelector('.cb-pixels-window');
         // End
         dom_remove_children(parent);
@@ -721,7 +730,8 @@ PixelsWindow.prototype.setShow = function (show) {
         var parent = vm.root.querySelector('.cb-pixels-window');
         dom_remove_children(parent);
         //$('.cb-pixels-window').css('display', 'none');
-        parent.style.display = 'none';
+        //parent.style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-pixels-window");
         // End
         update_playground_visibility(vm);
     }
