@@ -32255,7 +32255,8 @@ DrawingWindow.prototype.ensure_showing = function () {
 DrawingWindow.prototype.showing = function () {
     // Use relative selectors
     //return $('.cb-drawing-window').is(':visible');
-    return $(this.vm.root.querySelector('.cb-drawing-window')).is(':visible');
+    //return $(this.vm.root.querySelector('.cb-drawing-window')).is(':visible');
+    return this.vm.root.hasAttribute('data-cb-show-drawing-window');
     // End
 }
 
@@ -32507,7 +32508,8 @@ PixelsWindow.prototype.exportScreen = function () {
 PixelsWindow.prototype.showing = function () {
     // Use relative selectors
     //return $('.cb-pixels-window').is(':visible');
-    return $(this.vm.root.querySelector('.cb-pixels-window')).is(':visible');
+    //return $(this.vm.root.querySelector('.cb-pixels-window')).is(':visible');
+    return this.vm.root.hasAttribute('data-cb-show-pixels-window');
     // End
 }
 
