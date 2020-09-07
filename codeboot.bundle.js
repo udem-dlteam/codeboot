@@ -31421,7 +31421,10 @@ CodeBootVM.prototype.hideTooltip = function () {
     var vm = this;
 
     //TODO: limit to the VM
-    $('[data-toggle="tooltip"]').tooltip('hide');
+    // Use only relative selectors
+    //$('[data-toggle="tooltip"]').tooltip('hide');
+    $(vm.root.querySelectorAll('[data-toggle="tooltip"]')).tooltip('hide');
+    // End
 };
 
 CodeBootVM.prototype.setupEventHandlers = function () {
@@ -31527,24 +31530,32 @@ CodeBootVM.prototype.setupEventHandlers = function () {
         event.preventDefault();
     });
 */
-    $('#openFileModal').on('show', function () {
-        $('#openFileModalOKBtn').attr('disabled', 'disabled');
-        var $form = $('#openFileForm');
+    // Use relative selectors
+    //$('#openFileModal').on('show', function () {
+    $(vm.root.querySelector('#openFileModal')).on('show', function () {
+        //$('#openFileModalOKBtn').attr('disabled', 'disabled');
+        $(vm.root.querySelector('#openFileModalOKBtn')).attr('disabled', 'disabled');
+        //var $form = $('#openFileForm');
+        var $form = $(vm.root.querySelector('#openFileForm'));
         $form.empty().append($('<input type="file" id="openFileInput">').change(function (e) {
-            $('#openFileModalOKBtn').removeAttr('disabled');
+            //$('#openFileModalOKBtn').removeAttr('disabled');
+            $(vm.root.querySelector('#openFileModalOKBtn')).removeAttr('disabled');
         }));
     });
 
-    $('#openFileModalOKBtn').on('click', function (event) {
-        var files = $('#openFileInput').get(0).files;
+    //$('#openFileModalOKBtn').on('click', function (event) {
+    $(vm.root.querySelector('#openFileModalOKBtn')).on('click', function (event) {
+        //var files = $('#openFileInput').get(0).files;
+        var files = $(vm.root.querySelector('#openFileInput')).get(0).files;
         if (!files.length) return;
 
         var file = files[0];
 
-        var filename = $('#openFileModal').attr('data-cb-filename');
+        //var filename = $('#openFileModal').attr('data-cb-filename');
+        var filename = $(vm.root.querySelector('#openFileModal')).attr('data-cb-filename');
         vm.loadFile(vm.fs.getEditor(filename), file);
     });
-
+    // End
 };
 
 CodeBootVM.prototype.setClass = function (cls, add) {
@@ -31589,9 +31600,13 @@ CodeBootVM.prototype.setDevMode = function (devMode) {
 
         vm.setAttribute('data-cb-dev-mode', devMode);
         if (vm.devMode) {
-            $('.cb-menu-brand-btn-mode').text(' (dev mode)');
+            // Use relative selectors
+            //$('.cb-menu-brand-btn-mode').text(' (dev mode)');
+            $(vm.root.querySelectorAll('.cb-menu-brand-btn-mode')).text(' (dev mode)');
         } else {
-            $('.cb-menu-brand-btn-mode').text('');
+            //$('.cb-menu-brand-btn-mode').text('');
+            $(vm.root.querySelectorAll('.cb-menu-brand-btn-mode')).text('');
+            // End
         }
 
         vm.stateChanged();
@@ -32175,9 +32190,17 @@ DrawingWindow.prototype.setShow = function (show) {
     vm.setCheckmark('data-cb-setting-graphics', 'show-drawing-window', show);
 
     if (show) {
-        $('.cb-pixels-window').css('display', 'none');
-        $('.cb-drawing-window').css('display', 'inline');
+        // Use relative selectors
+        //$('.cb-pixels-window').css('display', 'none');
+        //$('.cb-drawing-window').css('display', 'inline');
+        // Use attribute to affect display instead of changing style directly
+        // will be usefull for CodeBoot in presentation
+        //vm.root.querySelector('.cb-pixels-window').style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-pixels-window");
+        vm.root.setAttribute("data-cb-show-drawing-window", true);
         var parent = vm.root.querySelector('.cb-drawing-window');
+        //parent.style.display = 'inline';
+        // End
         dom_remove_children(parent);
         parent.appendChild(drawing_window.drawing_canvas);
         parent.appendChild(drawing_window.turtle_canvas);
@@ -32186,25 +32209,40 @@ DrawingWindow.prototype.setShow = function (show) {
     } else {
         var parent = vm.root.querySelector('.cb-drawing-window');
         dom_remove_children(parent);
-        $('.cb-drawing-window').css('display', 'none');
+        // Use relative selectors
+        //$('.cb-drawing-window').css('display', 'none');
+        //parent.style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-drawing-window");
+        // End
         update_playground_visibility(vm);
     }
 };
 
 function update_playground_visibility(vm) {
+    // Use relative selectors
     var drawing_window_visible =
-        $('.cb-drawing-window').css('display') !== 'none';
+        vm.root.querySelector('.cb-drawing-window').style.display !== 'none';
+        //$('.cb-drawing-window').css('display') !== 'none';
     var pixels_window_visible =
-        $('.cb-pixels-window').css('display') !== 'none';
-    $('a[data-cb-setting-graphics="show-drawing-window"] > span')
-        .css('visibility', drawing_window_visible ? 'visible' : 'hidden');
-    $('a[data-cb-setting-graphics="show-pixels-window"] > span')
-        .css('visibility', pixels_window_visible ? 'visible' : 'hidden');
-    if (true || drawing_window_visible || pixels_window_visible || $('#b').html() !== '') {
+        vm.root.querySelector('.cb-pixels-window').style.display !== 'none';
+        //$('.cb-pixels-window').css('display') !== 'none';
+    vm.root.querySelectorAll('a[data-cb-setting-graphics="show-drawing-window"] > span').forEach(function (elem) {
+        elem.style.visibility = drawing_window_visible ? 'visible' : 'hidden';
+    });
+    //$('a[data-cb-setting-graphics="show-drawing-window"] > span')
+    //    .css('visibility', drawing_window_visible ? 'visible' : 'hidden');
+    vm.root.querySelectorAll('a[data-cb-setting-graphics="show-pixels-window"] > span').forEach(function (elem) {
+        elem.style.visibility = pixels_window_visible ? 'visible' : 'hidden';
+    });
+    //$('a[data-cb-setting-graphics="show-pixels-window"] > span')
+    //    .css('visibility', pixels_window_visible ? 'visible' : 'hidden');
+    //if (true || drawing_window_visible || pixels_window_visible || $('#b').html() !== '') {
+    if (true || drawing_window_visible || pixels_window_visible || $(vm.root.querySelector('#b')).html() !== '') {
         vm.setAttribute('data-cb-show-playground', true);
     } else {
         vm.setAttribute('data-cb-show-playground', false);
     }
+    // End
 }
 
 DrawingWindow.prototype.ensure_showing = function () {
@@ -32215,7 +32253,11 @@ DrawingWindow.prototype.ensure_showing = function () {
 }
 
 DrawingWindow.prototype.showing = function () {
-    return $('.cb-drawing-window').is(':visible');
+    // Use relative selectors
+    //return $('.cb-drawing-window').is(':visible');
+    //return $(this.vm.root.querySelector('.cb-drawing-window')).is(':visible');
+    return this.vm.root.hasAttribute('data-cb-show-drawing-window');
+    // End
 }
 
 function builtin_cs(width, height) {
@@ -32464,7 +32506,11 @@ PixelsWindow.prototype.exportScreen = function () {
 };
 
 PixelsWindow.prototype.showing = function () {
-    return $('.cb-pixels-window').is(':visible');
+    // Use relative selectors
+    //return $('.cb-pixels-window').is(':visible');
+    //return $(this.vm.root.querySelector('.cb-pixels-window')).is(':visible');
+    return this.vm.root.hasAttribute('data-cb-show-pixels-window');
+    // End
 }
 
 PixelsWindow.prototype.setShow = function (show) {
@@ -32475,17 +32521,31 @@ PixelsWindow.prototype.setShow = function (show) {
     vm.setCheckmark('data-cb-setting-graphics', 'show-pixels-window', show);
 
     if (show) {
-        $('.cb-drawing-window').css('display', 'none');
-        $('.cb-pixels-window').css('display', 'inline');
-        var parent = document.querySelector('.cb-pixels-window');
+        // Use relative selectors
+        //$('.cb-drawing-window').css('display', 'none');
+        //$('.cb-pixels-window').css('display', 'inline');
+        // Use attribute to affect display instead of changing style directly
+        // will be usefull for CodeBoot in presentation
+        //vm.root.querySelector('.cb-drawing-window').style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-drawing-window");
+        vm.root.setAttribute("data-cb-show-pixels-window", true);
+        var parent = vm.root.querySelector('.cb-pixels-window');
+        //parent.style.display = 'inline';
+        //var parent = document.querySelector('.cb-pixels-window');
+        // End
         dom_remove_children(parent);
         parent.appendChild(pixels_window.grid_canvas);
         parent.appendChild(pixels_window.pixels_canvas);
         update_playground_visibility(vm);
     } else {
-        var parent = document.querySelector('.cb-pixels-window');
+        // Use relative selectors
+        //var parent = document.querySelector('.cb-pixels-window');
+        var parent = vm.root.querySelector('.cb-pixels-window');
         dom_remove_children(parent);
-        $('.cb-pixels-window').css('display', 'none');
+        //$('.cb-pixels-window').css('display', 'none');
+        //parent.style.display = 'none';
+        vm.root.removeAttribute("data-cb-show-pixels-window");
+        // End
         update_playground_visibility(vm);
     }
 };
@@ -32791,10 +32851,14 @@ CodeBootVM.prototype.replay = function () {
 };
 
 CodeBootVM.prototype.showTryMeTooltip = function (filename) {
-    $('.cb-exec-controls-buttons').tooltip('show');
+    // Use relative selectors
+    //$('.cb-exec-controls-buttons').tooltip('show');
+    $(this.root.querySelectorAll('.cb-exec-controls-buttons')).tooltip('show');
 
     // Auto hide the tooltip after 2 secs
-    setTimeout(function () { $('.cb-exec-controls-buttons').tooltip('hide'); }, 2000);
+    //setTimeout(function () { $('.cb-exec-controls-buttons').tooltip('hide'); }, 2000);
+    setTimeout(function () { $(this.root.querySelectorAll('.cb-exec-controls-buttons')).tooltip('hide'); }, 2000);
+    // End
 };
 
 CodeBootVM.prototype.modeStopped = function () {
@@ -33554,7 +33618,10 @@ CodeBootVM.prototype.showExecPoint = function () {
     var value = vm.lang.getResult();
     var $container;
     if (loc.container instanceof SourceContainerInternalFile) {
-        $container = $('#cb-editors');
+        // Use relative selectors
+        //$container = $('#cb-editors');
+        $container = $(vm.root.querySelector('.cb-editors'));
+        // End
     } else {
         $container = null; /* use whole document */
     }
@@ -33572,7 +33639,10 @@ CodeBootVM.prototype.showExecPoint = function () {
         vm.execPointCodeElement(),
         vm.lang.executionStateHTML());
 
-    $('.cb-exec-point-code').hover(function (event) {
+    // Use relative selectors
+    //$('.cb-exec-point-code').hover(function (event) {
+    $(vm.root.querySelectorAll('.cb-exec-point-code')).hover(function (event) {
+    // End
         if (!vm.ui.execPointBubble.isVisible()) {
             vm.showExecPoint();
         }
@@ -34818,8 +34888,12 @@ CodeBootVM.prototype.replAddTranscript = function (text, cssClass) {
 /* ----- UI helpers ----- */
 
 CodeBootVM.prototype.scrollTo = function (elementOrSelector) {
-    var elementOffset = $(elementOrSelector).position().top;
-    $('.cb-editors').animate({scrollTop: elementOffset}, 400);
+    // Use relative selectors
+    //var elementOffset = $(elementOrSelector).position().top;
+    var elementOffset = $(typeof elementOrSelector === "string" ? this.root.querySelector(elementOrSelector) : elementOrSelector).position().top;
+    //$('.cb-editors').animate({scrollTop: elementOffset}, 400);
+    $(this.root.querySelector('.cb-editors')).animate({scrollTop: elementOffset}, 400);
+    // End
 };
 
 /* ----- Internal file system ----- */

@@ -817,7 +817,10 @@ CodeBootVM.prototype.hideTooltip = function () {
     var vm = this;
 
     //TODO: limit to the VM
-    $('[data-toggle="tooltip"]').tooltip('hide');
+    // Use only relative selectors
+    //$('[data-toggle="tooltip"]').tooltip('hide');
+    $(vm.root.querySelectorAll('[data-toggle="tooltip"]')).tooltip('hide');
+    // End
 };
 
 CodeBootVM.prototype.setupEventHandlers = function () {
@@ -923,24 +926,32 @@ CodeBootVM.prototype.setupEventHandlers = function () {
         event.preventDefault();
     });
 */
-    $('#openFileModal').on('show', function () {
-        $('#openFileModalOKBtn').attr('disabled', 'disabled');
-        var $form = $('#openFileForm');
+    // Use relative selectors
+    //$('#openFileModal').on('show', function () {
+    $(vm.root.querySelector('#openFileModal')).on('show', function () {
+        //$('#openFileModalOKBtn').attr('disabled', 'disabled');
+        $(vm.root.querySelector('#openFileModalOKBtn')).attr('disabled', 'disabled');
+        //var $form = $('#openFileForm');
+        var $form = $(vm.root.querySelector('#openFileForm'));
         $form.empty().append($('<input type="file" id="openFileInput">').change(function (e) {
-            $('#openFileModalOKBtn').removeAttr('disabled');
+            //$('#openFileModalOKBtn').removeAttr('disabled');
+            $(vm.root.querySelector('#openFileModalOKBtn')).removeAttr('disabled');
         }));
     });
 
-    $('#openFileModalOKBtn').on('click', function (event) {
-        var files = $('#openFileInput').get(0).files;
+    //$('#openFileModalOKBtn').on('click', function (event) {
+    $(vm.root.querySelector('#openFileModalOKBtn')).on('click', function (event) {
+        //var files = $('#openFileInput').get(0).files;
+        var files = $(vm.root.querySelector('#openFileInput')).get(0).files;
         if (!files.length) return;
 
         var file = files[0];
 
-        var filename = $('#openFileModal').attr('data-cb-filename');
+        //var filename = $('#openFileModal').attr('data-cb-filename');
+        var filename = $(vm.root.querySelector('#openFileModal')).attr('data-cb-filename');
         vm.loadFile(vm.fs.getEditor(filename), file);
     });
-
+    // End
 };
 
 CodeBootVM.prototype.setClass = function (cls, add) {
@@ -985,9 +996,13 @@ CodeBootVM.prototype.setDevMode = function (devMode) {
 
         vm.setAttribute('data-cb-dev-mode', devMode);
         if (vm.devMode) {
-            $('.cb-menu-brand-btn-mode').text(' (dev mode)');
+            // Use relative selectors
+            //$('.cb-menu-brand-btn-mode').text(' (dev mode)');
+            $(vm.root.querySelectorAll('.cb-menu-brand-btn-mode')).text(' (dev mode)');
         } else {
-            $('.cb-menu-brand-btn-mode').text('');
+            //$('.cb-menu-brand-btn-mode').text('');
+            $(vm.root.querySelectorAll('.cb-menu-brand-btn-mode')).text('');
+            // End
         }
 
         vm.stateChanged();

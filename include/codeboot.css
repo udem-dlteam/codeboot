@@ -844,6 +844,10 @@ div.tab-pane {
     display: none;
 }
 
+[data-cb-show-drawing-window] .cb-drawing-window {
+    display: inline;
+}
+
 /* ----- Pixels window ----- */
 
 .cb-pixels-window {
@@ -854,6 +858,10 @@ div.tab-pane {
     margin: 0;
     float: right;
     display: none;
+}
+
+[data-cb-show-pixels-window] .cb-pixels-window {
+    display: inline;
 }
 
 
