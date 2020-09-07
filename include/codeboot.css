@@ -1044,3 +1044,14 @@ table.cb-keybindings td:nth-child(1)
 .grammar-token.multi {
     display: block;
 }
+
+/* fix bubble */
+.cb-repl-container,
+.cb-file-container {
+    position: relative;
+}
+
+.CodeMirror-line > span,
+.CodeMirror-line > span span {
+    display: inline-block;
+}
