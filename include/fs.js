@@ -1,8 +1,12 @@
 /* ----- UI helpers ----- */
 
 CodeBootVM.prototype.scrollTo = function (elementOrSelector) {
-    var elementOffset = $(elementOrSelector).position().top;
-    $('.cb-editors').animate({scrollTop: elementOffset}, 400);
+    // Use relative selectors
+    //var elementOffset = $(elementOrSelector).position().top;
+    var elementOffset = $(typeof elementOrSelector === "string" ? this.root.querySelector(elementOrSelector) : elementOrSelector).position().top;
+    //$('.cb-editors').animate({scrollTop: elementOffset}, 400);
+    $(this.root.querySelector('.cb-editors')).animate({scrollTop: elementOffset}, 400);
+    // End
 };
 
 /* ----- Internal file system ----- */

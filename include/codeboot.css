@@ -844,6 +844,10 @@ div.tab-pane {
     display: none;
 }
 
+[data-cb-show-drawing-window] .cb-drawing-window {
+    display: inline;
+}
+
 /* ----- Pixels window ----- */
 
 .cb-pixels-window {
@@ -854,6 +858,10 @@ div.tab-pane {
     margin: 0;
     float: right;
     display: none;
+}
+
+[data-cb-show-pixels-window] .cb-pixels-window {
+    display: inline;
 }
 
 
@@ -1035,4 +1043,15 @@ table.cb-keybindings td:nth-child(1)
 
 .grammar-token.multi {
     display: block;
+}
+
+/* fix bubble */
+.cb-repl-container,
+.cb-file-container {
+    position: relative;
+}
+
+.CodeMirror-line > span,
+.CodeMirror-line > span span {
+    display: inline-block;
 }

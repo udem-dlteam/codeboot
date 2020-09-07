@@ -274,10 +274,14 @@ CodeBootVM.prototype.replay = function () {
 };
 
 CodeBootVM.prototype.showTryMeTooltip = function (filename) {
-    $('.cb-exec-controls-buttons').tooltip('show');
+    // Use relative selectors
+    //$('.cb-exec-controls-buttons').tooltip('show');
+    $(this.root.querySelectorAll('.cb-exec-controls-buttons')).tooltip('show');
 
     // Auto hide the tooltip after 2 secs
-    setTimeout(function () { $('.cb-exec-controls-buttons').tooltip('hide'); }, 2000);
+    //setTimeout(function () { $('.cb-exec-controls-buttons').tooltip('hide'); }, 2000);
+    setTimeout(function () { $(this.root.querySelectorAll('.cb-exec-controls-buttons')).tooltip('hide'); }, 2000);
+    // End
 };
 
 CodeBootVM.prototype.modeStopped = function () {
@@ -1041,7 +1045,10 @@ CodeBootVM.prototype.showExecPoint = function () {
     var value = vm.lang.getResult();
     var $container;
     if (loc.container instanceof SourceContainerInternalFile) {
-        $container = $('#cb-editors');
+        // Use relative selectors
+        //$container = $('#cb-editors');
+        $container = $(vm.root.querySelector('.cb-editors'));
+        // End
     } else {
         $container = null; /* use whole document */
     }
@@ -1059,7 +1066,10 @@ CodeBootVM.prototype.showExecPoint = function () {
         vm.execPointCodeElement(),
         vm.lang.executionStateHTML());
 
-    $('.cb-exec-point-code').hover(function (event) {
+    // Use relative selectors
+    //$('.cb-exec-point-code').hover(function (event) {
+    $(vm.root.querySelectorAll('.cb-exec-point-code')).hover(function (event) {
+    // End
         if (!vm.ui.execPointBubble.isVisible()) {
             vm.showExecPoint();
         }
