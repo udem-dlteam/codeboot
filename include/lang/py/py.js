@@ -137,7 +137,8 @@ LangPy.prototype.compile = function (source, container, reboot) {
     var lang = this;
     var external_context =
       {
-        syntaxError: syntaxError
+          syntaxError: syntaxError,
+          filename: from_repl ? undefined : container.tostr
       };
 
     var ast = pyinterp.parse(source,
