@@ -1170,10 +1170,6 @@ CodeBootFileEditor.prototype.rename = function () {
 
     fe.renameTabEvents();
 
-    inputBox.addEventListener('focusout', function (event) {
-        doneRenaming();
-    });
-
     inputBox.addEventListener('keydown', function (event) {
         if (event.keyCode === 27) {
             event.stopPropagation();
