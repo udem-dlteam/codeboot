@@ -535,14 +535,21 @@ function drawing_getScreenHeight(rte) {
 
 function drawing_setPixel(rte, x, y, color) {
   var pw = rte.vm.ui.pw;
-  pw.setPixel(x, y, 'rgb('+color.r+','+color.g+','+color.b+')');
+  var red = (color.r < 16 ? '0' : '') + color.r.toString(16)
+  var green = (color.g < 16 ? '0' : '') + color.g.toString(16)
+  var blue = (color.b < 16 ? '0' : '') + color.b.toString(16)
+  var color_str = '#' + red + green + blue;
+
+  pw.setPixel(x, y, color_str);
   pw.ensure_showing()
 }
 
 function drawing_fillRectangle(rte, x, y, width, height, color) {
   var pw = rte.vm.ui.pw;
-  var color_str = 'rgb('+color.r+','+color.g+','+color.b+')';
-  console.log(color_str);
+  var red = (color.r < 16 ? '0' : '') + color.r.toString(16)
+  var green = (color.g < 16 ? '0' : '') + color.g.toString(16)
+  var blue = (color.b < 16 ? '0' : '') + color.b.toString(16)
+  var color_str = '#' + red + green + blue;
   pw.fill_rect(x, y, width, height, color_str);
 
   pw.ensure_showing()
